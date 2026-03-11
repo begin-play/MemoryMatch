@@ -10,16 +10,23 @@ public class Card : MonoBehaviour, IPointerDownHandler
 
     private GameManager gameManager;
 
-    [SerializeField] private CardState state;
-
     private bool isFaceUp;
-    
-    private int uniqueId;
+
+    private CardState state;
+
+    public CardState State
+    {
+        get => state;
+        set => state = value;
+    }
+
+
+    [SerializeField]private int uniqueId;
     public int UniqueId => uniqueId;
 
     private GameObject faceUp;
     private GameObject faceDown;
-    
+
     private CanvasGroup canvasGroup;
 
     void Awake()
@@ -82,10 +89,8 @@ public class Card : MonoBehaviour, IPointerDownHandler
                 {
                     isFrontFaceVisible = true;
                     isFaceUp = !isFaceUp;
-                   // bool newIsFaceUp = Mathf.Approximately(targetRotation, 180f);
                     faceUp.SetActive(isFaceUp);
                     faceDown.SetActive(!isFaceUp);
-                   
                 }
             }
 
@@ -94,41 +99,32 @@ public class Card : MonoBehaviour, IPointerDownHandler
 
         if (state == CardState.Matched)
         {
-            //already matched nothing to do here; no state change required
+            //card already matched nothing to do here; no state change required
         }
         else
         {
             state = isFaceUp ? CardState.FaceUp : CardState.FaceDown;
         }
 
-        Debug.Log("Card state: " + state);
+      
     }
 
 
     public void HideCard()
     {
         StartCoroutine(HideCardDelayed());
-       
     }
 
     IEnumerator HideCardDelayed()
-    { 
+    {
         yield return new WaitForSeconds(0.5f);
         float alpha = canvasGroup.alpha;
         while (!Mathf.Approximately(alpha, 0f))
         {
             alpha = Mathf.MoveTowards(alpha, 0, hideSpeed * Time.deltaTime);
-            canvasGroup.alpha=alpha;
+            canvasGroup.alpha = alpha;
 
             yield return null;
         }
-      
-        
-    }
-
-    public CardState State
-    {
-        get => state;
-        set => state = value;
     }
 }
