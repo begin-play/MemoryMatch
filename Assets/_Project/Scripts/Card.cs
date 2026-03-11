@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour, IPointerDownHandler
 {
@@ -26,6 +27,8 @@ public class Card : MonoBehaviour, IPointerDownHandler
 
     private GameObject faceUp;
     private GameObject faceDown;
+    private Image imageContent;
+    private string spriteName;
 
     private CanvasGroup canvasGroup;
 
@@ -33,6 +36,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
     {
         faceUp = transform.Find("FaceUp").gameObject;
         faceDown = transform.Find("FaceDown").gameObject;
+        imageContent = transform.Find("FaceUp/Content").GetComponent<Image>();
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
@@ -48,10 +52,14 @@ public class Card : MonoBehaviour, IPointerDownHandler
     }
 
 
-    public void Initialize(GameManager gameManager, CardState state)
+    public void Initialize(GameManager gameManager, CardState state,int uniqueId, Sprite sprite)
     {
         this.gameManager = gameManager;
         this.state = state;
+        this.uniqueId = uniqueId;
+        imageContent.sprite = sprite;
+        spriteName = sprite.name;
+        
         isFaceUp = (state == CardState.FaceUp);
         if (faceUp != null) faceUp.SetActive(isFaceUp);
         if (faceDown != null) faceDown.SetActive(!isFaceUp);

@@ -1,27 +1,67 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private float cardPeekTime = 3f;
+    [SerializeField]SpriteAtlas spriteAtlas;
     private readonly int fixedScore = 5;
     private Stack<Card> cardStack = new();
     private bool isLevelComplete;
 
     private int score;
     private int scoreMultiplier;
-
+    List<CardData> allCardData = new List<CardData>();
+    List<CardData> playingCardData = new List<CardData>();
+    [SerializeField] private GameObject gameBoard;
+    [SerializeField]private GameObject referenceCard;
+    [SerializeField] private int gridSize=6;
     private void Start()
     {
+       
         StartCoroutine(StartNewGame());
+    }
+
+    void LoadAtlas()
+    {
+        Sprite[] spriteArray= new Sprite[spriteAtlas.spriteCount];
+        spriteAtlas.GetSprites(spriteArray);
+        for (int i = 0; i < spriteAtlas.spriteCount; i++)
+        {
+            CardData spriteData = new CardData(i, spriteArray[i]);
+            allCardData.Add(spriteData);
+        }
+        
+        allCardData.Shuffle();
+        playingCardData.Clear();
+        allCardData.Take(gridSize/2).ToList().ForEach(x => playingCardData.Add(x));
     }
 
     private IEnumerator StartNewGame()
     {
+        LoadAtlas();
         cardStack = new Stack<Card>();
         isLevelComplete = false;
-        foreach (var card in FindObjectsOfType<Card>()) card.Initialize(this, CardState.FaceUp);
+        
+        for (int i= 0; i < playingCardData.Count * 2 ; i++)
+        {
+            GameObject cardObject = Instantiate(referenceCard, gameBoard.transform);
+          
+            cardObject.transform.SetSiblingIndex(Random.Range(0, gameBoard.transform.childCount));
+        }
+       
+        List<Card> cards = FindObjectsOfType<Card>().ToList();
+        for (int i = 0; i < playingCardData.Count; i++)
+        {
+            cards[i].Initialize(this, CardState.FaceUp,i,playingCardData[i].GetSprite());
+            cards[i+playingCardData.Count].Initialize(this, CardState.FaceUp,i,playingCardData[i].GetSprite());
+            Debug.Log(cards[i].UniqueId);
+        }
+
+       
 
         yield return new WaitForSeconds(cardPeekTime);
 
