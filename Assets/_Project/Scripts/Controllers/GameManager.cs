@@ -4,37 +4,28 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-   
-    private int score = 0;
-    private int fixedScore = 5;
-  
-    private int scoreMultiplier = 0;
-
     [SerializeField] private float cardPeekTime = 3f;
-    Stack<Card> cardStack = new Stack<Card>();
-    bool isLevelComplete = false;
+    private readonly int fixedScore = 5;
+    private Stack<Card> cardStack = new();
+    private bool isLevelComplete;
 
-    void Start()
+    private int score;
+    private int scoreMultiplier;
+
+    private void Start()
     {
         StartCoroutine(StartNewGame());
-      
     }
 
-    IEnumerator StartNewGame()
+    private IEnumerator StartNewGame()
     {
         cardStack = new Stack<Card>();
         isLevelComplete = false;
-        foreach (Card card in FindObjectsOfType<Card>())
-        {
-            card.Initialize(this, CardState.FaceUp);
-        }
+        foreach (var card in FindObjectsOfType<Card>()) card.Initialize(this, CardState.FaceUp);
 
         yield return new WaitForSeconds(cardPeekTime);
 
-        foreach (Card card in FindObjectsOfType<Card>())
-        {
-            card.Flip();
-        }
+        foreach (var card in FindObjectsOfType<Card>()) card.Flip();
     }
 
     public void ProcessCard(Card incomingCard)
@@ -45,7 +36,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Card lastCard = cardStack.Peek();
+            var lastCard = cardStack.Peek();
             if (lastCard.UniqueId == incomingCard.UniqueId)
             {
                 cardStack.Push(incomingCard);
@@ -57,7 +48,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 // Mismatch: pop the last card and flip both back
-                Card poppedCard = cardStack.Pop();
+                var poppedCard = cardStack.Pop();
                 scoreMultiplier = 0;
                 StartCoroutine(IncorrectMatch(poppedCard, incomingCard));
             }
@@ -66,14 +57,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void UpdateScore()
+    private void UpdateScore()
     {
-        
-        score += (fixedScore * scoreMultiplier);
+        score += fixedScore * scoreMultiplier;
         Debug.Log(score);
     }
 
-    IEnumerator CorrectMatch(Card lastCard, Card incomingCard)
+    private IEnumerator CorrectMatch(Card lastCard, Card incomingCard)
     {
         yield return new WaitUntil(() => incomingCard.State == CardState.FaceUp);
         lastCard.State = CardState.Matched;
@@ -82,13 +72,10 @@ public class GameManager : MonoBehaviour
         incomingCard.HideCard();
 
 
-        if (cardStack.Count == FindObjectsOfType<Card>().Length)
-        {
-            isLevelComplete = true;
-        }
+        if (cardStack.Count == FindObjectsOfType<Card>().Length) isLevelComplete = true;
     }
 
-    IEnumerator IncorrectMatch(Card poppedCard, Card incomingCard)
+    private IEnumerator IncorrectMatch(Card poppedCard, Card incomingCard)
     {
         yield return new WaitUntil(() => incomingCard.State == CardState.FaceUp);
         poppedCard.Flip();

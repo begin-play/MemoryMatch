@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public static class ExtenstionMethods
 {
-    private static Random randomSeed = new Random();
+    private static readonly Random randomSeed = new Random();
     
     public static void Shuffle<T>(this IList<T> list)
     {
