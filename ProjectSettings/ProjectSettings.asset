@@ -158,6 +158,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
+    Android: com.DefaultCompany.MemoryMatch
     Standalone: com.DefaultCompany.MemoryMatch
   buildNumber:
     Standalone: 0
