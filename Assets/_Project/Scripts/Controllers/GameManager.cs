@@ -14,7 +14,13 @@ public class GameManager : MonoBehaviour
     Stack<Card> cardStack = new Stack<Card>();
     bool isLevelComplete = false;
 
-    IEnumerator Start()
+    void Start()
+    {
+        StartCoroutine(StartNewGame());
+      
+    }
+
+    IEnumerator StartNewGame()
     {
         cardStack = new Stack<Card>();
         isLevelComplete = false;

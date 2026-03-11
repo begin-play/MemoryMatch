@@ -57,6 +57,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
         if (faceDown != null) faceDown.SetActive(!isFaceUp);
         float currentRotation = isFaceUp ? 180f : 0f;
         transform.rotation = Quaternion.Euler(0, currentRotation, 0);
+      
     }
 
     public void Flip()
