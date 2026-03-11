@@ -7,15 +7,15 @@ using UnityEngine.SceneManagement;
 public class LoadMainScene : MonoBehaviour
 {
     [SerializeField] private float waitTime = 3f;
-    
-    [SerializeField]private Text loadingText;
-    
+
+    [SerializeField] private Text loadingText;
+
     [SerializeField] private Slider loadingBar;
-    
+
     private bool allowNextSceneTransition;
 
     private float loadingProgress;
-    
+
     private IEnumerator Start()
     {
         allowNextSceneTransition = false;
@@ -39,9 +39,9 @@ public class LoadMainScene : MonoBehaviour
 
         while (!asyncOperation.isDone)
         {
-           loadingProgress = Mathf.InverseLerp(0.0f, .9f, asyncOperation.progress);
-            
-        
+            loadingProgress = Mathf.InverseLerp(0.0f, .9f, asyncOperation.progress);
+
+
             loadingBar.value = loadingProgress;
             loadingText.text = $"Loading... {(int)loadingProgress * 100}%";
             yield return null;
@@ -50,8 +50,5 @@ public class LoadMainScene : MonoBehaviour
                 asyncOperation.allowSceneActivation = true;
             }
         }
-
-      
-      
     }
 }
