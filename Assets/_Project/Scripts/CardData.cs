@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class CardData 
 {
-    public int uniqueId;
+    private int uniqueId;
     private Sprite sprite;
-    
+    private int siblingIndex;
 
     public CardData(int uniqueId, Sprite sprite)
     {

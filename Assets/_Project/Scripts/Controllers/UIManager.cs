@@ -44,10 +44,8 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-       // gameManager.UIMnaager = this;
-        
-        
-        if (PlayerPrefs.GetInt("SaveGameAvailable", 0) == 0)
+    
+        if (!SaveManager.Instance.IsSaveAvailable())
         {
             //Save not available
             resumeButton.gameObject.SetActive(false);
