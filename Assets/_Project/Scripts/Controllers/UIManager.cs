@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 Sagar Kumar
+ * All Rights Reserved.
+ */
 using UnityEngine;
 using UnityEngine.UI;
 #if UNITY_EDITOR

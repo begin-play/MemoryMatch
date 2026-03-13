@@ -1,4 +1,7 @@
-
+/*
+ * Copyright (c) 2026 Sagar Kumar
+ * All Rights Reserved.
+ */
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour

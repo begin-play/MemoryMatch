@@ -1,7 +1,10 @@
+/*
+ * Copyright (c) 2026 Sagar Kumar
+ * All Rights Reserved.
+ */
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.U2D;
 

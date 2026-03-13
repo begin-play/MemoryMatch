@@ -1,4 +1,7 @@
-using System.Collections;
+/*
+ * Copyright (c) 2026 Sagar Kumar
+ * All Rights Reserved.
+ */
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;

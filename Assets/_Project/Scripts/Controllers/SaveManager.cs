@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 Sagar Kumar
+ * All Rights Reserved.
+ */
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;

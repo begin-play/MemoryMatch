@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
-
+/*
+ * Copyright (c) 2026 Sagar Kumar
+ * All Rights Reserved.
+ */
 [Serializable]
 public class CardData
 {

@@ -1,9 +1,13 @@
+/*
+ * Copyright (c) 2026 Sagar Kumar
+ * All Rights Reserved.
+ */
 using System;
 using System.Collections.Generic;
 
 public static class ExtenstionMethods
 {
-    private static readonly Random randomSeed = new Random();
+    private static readonly Random RandomSeed = new Random();
     
     public static void Shuffle<T>(this IList<T> list)
     {
@@ -11,7 +15,7 @@ public static class ExtenstionMethods
         while (n > 1)
         {
             n--;
-            int k = randomSeed.Next(n + 1);
+            int k = RandomSeed.Next(n + 1);
             (list[k], list[n]) = (list[n], list[k]);
         }
     }
