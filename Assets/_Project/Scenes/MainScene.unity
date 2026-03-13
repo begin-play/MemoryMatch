@@ -2644,7 +2644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameBoard: {fileID: 701278480}
   referenceCard: {fileID: 2730154974043330238, guid: 8879f22523cf79e45866e5febed68c42, type: 3}
-  columnSize: 2
+  columnSize: 4
   rowSize: 3
   isGridSizeValid: 1
 --- !u!4 &831755091
@@ -5300,8 +5300,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1664030619}
-  - component: {fileID: 1664030620}
   - component: {fileID: 1664030621}
+  - component: {fileID: 1664030620}
   m_Layer: 0
   m_Name: AudioManager
   m_TagString: Untagged

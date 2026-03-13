@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject referenceCard;
     [SerializeField] private int columnSize = 4;
     [SerializeField] private int rowSize = 4;
+    
+    private readonly int padding = 10;
+    private readonly int spacing = 10;
     
     private int gridSize;
     
@@ -41,6 +45,21 @@ public class GridManager : MonoBehaviour
     }
     private void AdjustGridUI()
     {
-       
+        GridLayoutGroup gridLayout = gameBoard.GetComponent<GridLayoutGroup>();
+
+        RectTransform boardRect = gameBoard.GetComponent<RectTransform>();
+
+        gridLayout.padding = new RectOffset(padding, padding, padding, padding);
+        gridLayout.spacing = new Vector2(spacing, spacing);
+
+        float totalPaddingW = gridLayout.padding.left + gridLayout.padding.right;
+        float totalSpacingW = (columnSize - 1) * gridLayout.spacing.x;
+        float cellWidth = (boardRect.rect.width - totalPaddingW - totalSpacingW) / columnSize;
+
+        float totalPaddingH = gridLayout.padding.top + gridLayout.padding.bottom;
+        float totalSpacingH = (rowSize - 1) * gridLayout.spacing.y;
+        float cellHeight = (boardRect.rect.height - totalPaddingH - totalSpacingH) / rowSize;
+        
+        gridLayout.cellSize = new Vector2(cellWidth, cellHeight);
     }
 }
