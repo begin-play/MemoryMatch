@@ -8,6 +8,7 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance;
 
     private SaveData currentSaveData;
+    
     private string saveFilePath;
 
     private void Awake()
@@ -38,11 +39,7 @@ public class SaveManager : MonoBehaviour
             currentSaveData = JsonUtility.FromJson<SaveData>(json);
         }
     }
-
-    public int LoadGridSize()
-    {
-        return 6;
-    }
+    
     
     #region Music Settings
 
@@ -90,6 +87,7 @@ public class SaveManager : MonoBehaviour
     {
         currentSaveData.saveAvailable = saveAvailable;
         currentSaveData.savedCardData = savedCardData;
+        SaveGameData();
     }
 
     public bool IsSaveAvailable()
@@ -99,7 +97,8 @@ public class SaveManager : MonoBehaviour
     public void ClearLevelData()
     {
         currentSaveData.saveAvailable = false;
-        currentSaveData = new SaveData();
+        currentSaveData.savedCardData = new List<CardData>();
+        SaveGameData();
     }
 
     public List<CardData> LoadLeveData()

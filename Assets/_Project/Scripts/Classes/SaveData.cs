@@ -17,6 +17,5 @@ public class SaveData
     public int score = 0;
     public int scoreMultiplier = 1;
     
-    
     public List<CardData> savedCardData = new List<CardData>();
 }

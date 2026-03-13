@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour, IPointerDownHandler
 {
-    private readonly float rotationSpeed = 180f;
-    private readonly float hideSpeed = 0.5f;
+    private readonly float rotationSpeed = 360f;
+    private readonly float hideSpeed = 5f;
 
     private GameManager gameManager;
 
@@ -15,6 +15,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
 
     private CardState state;
 
+    [SerializeField] private int cardSiblingIndex;
     public CardState State
     {
         get => state;
@@ -22,13 +23,13 @@ public class Card : MonoBehaviour, IPointerDownHandler
     }
 
 
-    [SerializeField]private int uniqueId;
+    [SerializeField] private int uniqueId;
     public int UniqueId => uniqueId;
 
     private GameObject faceUp;
     private GameObject faceDown;
     private Image imageContent;
-    private string spriteName;
+
 
     private CanvasGroup canvasGroup;
 
@@ -45,42 +46,35 @@ public class Card : MonoBehaviour, IPointerDownHandler
     {
         if (state == CardState.FaceDown && state != CardState.Matched)
         {
-            Debug.Log("Card clicked");
             Flip();
             gameManager.ProcessCard(this);
         }
     }
 
 
-    public void Initialize(GameManager gameManager, CardState state,int uniqueId, Sprite sprite)
+    public void Initialize(GameManager gameManager, CardData cardData)
     {
         this.gameManager = gameManager;
-        this.state = state;
-        this.uniqueId = uniqueId;
-        imageContent.sprite = sprite;
-        spriteName = sprite.name;
-        
+        this.state = cardData.GetState();
+        this.uniqueId = cardData.GetUniqueId();
+        imageContent.sprite = cardData.GetSprite();
+        cardSiblingIndex = cardData.GetCardSiblingIndex();
+
         isFaceUp = (state == CardState.FaceUp);
         if (faceUp != null) faceUp.SetActive(isFaceUp);
         if (faceDown != null) faceDown.SetActive(!isFaceUp);
         float currentRotation = isFaceUp ? 180f : 0f;
         transform.rotation = Quaternion.Euler(0, currentRotation, 0);
-      
     }
 
     public void Flip()
     {
         state = CardState.Animating;
-        StartCoroutine(AnimateCard());
+        StartCoroutine(nameof(AnimateCard));
     }
 
-    IEnumerator AnimateCard(bool delayedAnimation = false)
+    IEnumerator AnimateCard()
     {
-        if (delayedAnimation)
-        {
-            yield return new WaitForSeconds(1.5f);
-        }
-
         float startRotation = isFaceUp ? 180f : 0f;
         float targetRotation = isFaceUp ? 0f : 180f;
         float currentRotation = startRotation;
@@ -114,14 +108,28 @@ public class Card : MonoBehaviour, IPointerDownHandler
         {
             state = isFaceUp ? CardState.FaceUp : CardState.FaceDown;
         }
-
-      
     }
 
+    public void ResetCardData()
+    {
+        StopRunningCoruotines();
+    }
+
+    public void ResetCard()
+    {
+        canvasGroup.alpha = 1f;
+        transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+    }
+
+    void StopRunningCoruotines()
+    {
+        StopCoroutine(nameof(HideCardDelayed));
+        StopCoroutine(nameof(AnimateCard));
+    }
 
     public void HideCard()
     {
-        StartCoroutine(HideCardDelayed());
+        StartCoroutine(nameof(HideCardDelayed));
     }
 
     IEnumerator HideCardDelayed()
@@ -131,6 +139,7 @@ public class Card : MonoBehaviour, IPointerDownHandler
         while (!Mathf.Approximately(alpha, 0f))
         {
             alpha = Mathf.MoveTowards(alpha, 0, hideSpeed * Time.deltaTime);
+            alpha = Mathf.Clamp(alpha, 0f, 1f);
             canvasGroup.alpha = alpha;
 
             yield return null;

@@ -1,34 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.U2D;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private float cardPeekTime = 3f;
-    [SerializeField]SpriteAtlas spriteAtlas;
+    
+    [SerializeField] SpriteAtlas spriteAtlas;
+    
     private readonly int fixedScore = 5;
+    
     private Stack<Card> cardStack = new();
-    private bool isLevelComplete;
+ 
 
     private int score;
     private int scoreMultiplier;
-    List<CardData> allCardData = new List<CardData>();
+    
     List<CardData> playingCardData = new List<CardData>();
-    [SerializeField] private GameObject gameBoard;
-    [SerializeField]private GameObject referenceCard;
-    [SerializeField] private int gridSize=6;
-    private UIManager uiManager;
+    
+    List<Card> playingCards = new List<Card>();
+    
+    [SerializeField] GridManager gridManager;
+    [SerializeField] UIManager uiManager;
 
+    [SerializeField]private Sprite[] spriteArray;
     void Start()
     {
-        gridSize= SaveManager.Instance.LoadGridSize();
-        
+        gridManager.InitializeGrid(ref playingCards);
+        if (SaveManager.Instance.IsSaveAvailable())
+        {
+            playingCardData = SaveManager.Instance.LoadLeveData();
+        }
+        LoadAtlas();
     }
+
+
     public void ResumeGame()
     {
-        
+        StartCoroutine(ResumeLastGame());
     }
 
     public void StartGame()
@@ -38,45 +50,54 @@ public class GameManager : MonoBehaviour
 
     void LoadAtlas()
     {
-        Sprite[] spriteArray= new Sprite[spriteAtlas.spriteCount];
+        spriteArray = new Sprite[spriteAtlas.spriteCount];
         spriteAtlas.GetSprites(spriteArray);
-        for (int i = 0; i < spriteAtlas.spriteCount; i++)
-        {
-            CardData spriteData = new CardData(i, spriteArray[i]);
-            allCardData.Add(spriteData);
-        }
-        
-        allCardData.Shuffle();
-        playingCardData.Clear();
-        allCardData.Take(gridSize/2).ToList().ForEach(x => playingCardData.Add(x));
     }
 
-    private IEnumerator StartNewGame()
+    private IEnumerator ResumeLastGame()
     {
-        LoadAtlas();
         cardStack = new Stack<Card>();
-        isLevelComplete = false;
         
-        for (int i= 0; i < playingCardData.Count * 2 ; i++)
+        for (int i = 0; i < playingCards.Count; i++)
         {
-            GameObject cardObject = Instantiate(referenceCard, gameBoard.transform);
-          
-            cardObject.transform.SetSiblingIndex(Random.Range(0, gameBoard.transform.childCount));
+            playingCardData[i].SetCardSiblingIndex(playingCards[i].transform.GetSiblingIndex());
+            
+            playingCards[i].Initialize(this, playingCardData[i]);
         }
-       
-        List<Card> cards = FindObjectsOfType<Card>().ToList();
-        for (int i = 0; i < playingCardData.Count; i++)
-        {
-            cards[i].Initialize(this, CardState.FaceUp,i,playingCardData[i].GetSprite());
-            cards[i+playingCardData.Count].Initialize(this, CardState.FaceUp,i,playingCardData[i].GetSprite());
-            Debug.Log(cards[i].UniqueId);
-        }
-
-       
 
         yield return new WaitForSeconds(cardPeekTime);
 
-        foreach (var card in FindObjectsOfType<Card>()) card.Flip();
+        foreach (var card in playingCards) card.Flip();
+       
+    }
+    private IEnumerator StartNewGame()
+    {   
+        cardStack = new Stack<Card>();
+        playingCardData.Clear();
+        
+      
+        spriteArray.Shuffle();
+
+        for (int i = 0; i < playingCards.Count/2; i++)
+        {
+            CardData cardData = new CardData(i,spriteArray[i],CardState.FaceUp);
+            playingCardData.Add(cardData);
+            playingCardData.Add(cardData);
+       
+        }
+        playingCardData.Shuffle();
+        
+        for (int i = 0; i < playingCards.Count; i++)
+        {
+           
+            playingCardData[i].SetCardSiblingIndex(playingCards[i].transform.GetSiblingIndex());
+            playingCards[i].ResetCard();
+            playingCards[i].Initialize(this, playingCardData[i]);
+        }
+
+        yield return new WaitForSeconds(cardPeekTime);
+
+        foreach (var card in playingCards) card.Flip();
     }
 
     public void ProcessCard(Card incomingCard)
@@ -111,7 +132,7 @@ public class GameManager : MonoBehaviour
     private void UpdateScore()
     {
         score += fixedScore * scoreMultiplier;
-        Debug.Log(score);
+     
     }
 
     private IEnumerator CorrectMatch(Card lastCard, Card incomingCard)
@@ -119,17 +140,46 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => incomingCard.State == CardState.FaceUp);
         lastCard.State = CardState.Matched;
         incomingCard.State = CardState.Matched;
+        
+        foreach (var cardData in playingCardData)
+        {
+            if(cardData.GetUniqueId()== incomingCard.UniqueId)
+                cardData.SetState(CardState.Matched);
+        }
+        
         lastCard.HideCard();
         incomingCard.HideCard();
 
 
-        if (cardStack.Count == FindObjectsOfType<Card>().Length) isLevelComplete = true;
+        if (cardStack.Count == playingCards.Count)
+        {
+           uiManager.LevelCompleteEvent();
+        }
     }
 
+    public void ResetBoardCards()
+    {
+        playingCards.ForEach(x=>x.ResetCardData());
+
+    }
     private IEnumerator IncorrectMatch(Card poppedCard, Card incomingCard)
     {
         yield return new WaitUntil(() => incomingCard.State == CardState.FaceUp);
         poppedCard.Flip();
         incomingCard.Flip();
+    }
+
+    public void SaveActiveLevel()
+    {
+        int matchedCards = playingCardData.Count(x=> x.GetState()==CardState.Matched);
+  
+        if (matchedCards == 0 || matchedCards == playingCardData.Count)
+        {
+            SaveManager.Instance.ClearLevelData();
+            return;
+        }
+           
+        SaveManager.Instance.SaveLevelData(true,playingCardData);
+        
     }
 }

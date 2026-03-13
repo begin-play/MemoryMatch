@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject creditsMenu;
     [SerializeField] private GameObject quitMenu;
     [SerializeField] private GameObject scoreBoard;
+    [SerializeField] private GameObject gameBoard;
     [SerializeField] private GameObject gameCompleteMenu;
     
     [Header("Main Menu Buttons")] 
@@ -49,17 +50,8 @@ public class UIManager : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         audioManager = FindObjectOfType<AudioManager>();
-    
-        if (!SaveManager.Instance.IsSaveAvailable())
-        {
-            //Save not available
-            resumeButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            //Save available
-            resumeButton.gameObject.SetActive(true);
-        }
+        
+        resumeButton.gameObject.SetActive(SaveManager.Instance.IsSaveAvailable());
        
         SaveManager.Instance.LoadMusicSettings(ref musicVolumeSlider,ref sfxVolumeSlider,ref musicToggle,ref sfxToggle);
     }
@@ -100,20 +92,36 @@ public class UIManager : MonoBehaviour
 
     void StartButtonPressed()
     {
+        gameBoard.SetActive(true);
+        gameCompleteMenu.SetActive(false);
+        
         HandleMenuItems(mainMenu, false);
         HandleMenuItems(gameMenu);
+       
         gameManager.StartGame();
     }
 
     private void GameMenuBackButtonPressed()
     {
+       
         HandleMenuItems(gameMenu, false);
         HandleMenuItems(mainMenu);
-        
-    } 
+        gameManager.SaveActiveLevel();
+       
+        resumeButton.gameObject.SetActive(SaveManager.Instance.IsSaveAvailable());
+    }
+
+    public void LevelCompleteEvent()
+    {
+        gameBoard.SetActive(false);
+        gameCompleteMenu.SetActive(true);
+    }
     private void GameMenuNextButtonPressed()
     {
-       //add next button functionality here later.
+        gameCompleteMenu.SetActive(false);
+        gameBoard.SetActive(true);
+        gameManager.ResetBoardCards();
+        gameManager.StartGame();
     }
     void SettingButtonPressed()
     {
@@ -153,6 +161,7 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     
+    #region Credit Menu Buttons
     void CreditsButtonPressed()
     {
         HandleMenuItems(mainMenu, false);
@@ -164,6 +173,9 @@ public class UIManager : MonoBehaviour
         HandleMenuItems(creditsMenu, false);
         HandleMenuItems(mainMenu);
     }
+    #endregion
+    
+    #region Game Quit Menu Buttons
     void QuitButtonPressed()
     {
         HandleMenuItems(mainMenu, false);
@@ -184,6 +196,8 @@ public class UIManager : MonoBehaviour
         HandleMenuItems(quitMenu, false);
         HandleMenuItems(mainMenu);
     }
+    #endregion
+   
     void HandleMenuItems(GameObject menuItem, bool open = true)
     {
         menuItem.SetActive(open);

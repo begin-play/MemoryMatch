@@ -26,7 +26,7 @@ public class LoadMainScene : MonoBehaviour
 
     private void AnimationComplete()
     {
-        Debug.Log("Animation Complete");
+      
         allowNextSceneTransition = true;
     }
 

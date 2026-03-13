@@ -56,6 +56,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 0f46e873c9181b94194f0000beacafa9, type: 3}
   - {fileID: 21300000, guid: 4943f4a3d9ecf4c46b71478abd20c2d7, type: 3}
   - {fileID: 21300000, guid: 0af55314b74d5df4a980231578e2841f, type: 3}
+  - {fileID: 21300000, guid: 12143de41a471784abe3873adaa7d392, type: 3}
   - {fileID: 21300000, guid: d75fbe05b219e7a4b8c9170ce6477105, type: 3}
   - {fileID: 21300000, guid: c4ef141797c449b419f95dfdbdfee2cf, type: 3}
   - {fileID: 21300000, guid: 72cf47c9ad011b749b04f13b8dc5e5db, type: 3}
@@ -72,6 +73,7 @@ SpriteAtlas:
   - Left
   - Down
   - Add
+  - SuperStar
   - MiniStar
   - Circle
   - Star
