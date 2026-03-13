@@ -73,6 +73,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < playingCardData.Count; i++)
         {
             int index = playingCardData[i].GetCardSiblingIndex();
+            playingCardData[i].SetSprite(spriteAtlas.GetSprite( playingCardData[i].GetSpriteName()));
             gameBoard.transform.GetChild(index).GetComponent<Card>().Initialize(this, playingCardData[i]);
            
         }

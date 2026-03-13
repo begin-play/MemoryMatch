@@ -24,6 +24,15 @@ public class CardData
         spriteName = sprite.name.Replace("(Clone)","");
         this.state = state;
     }
+
+    public void SetSprite(Sprite sprite)
+    {
+        this.sprite = sprite;
+    }
+    public string GetSpriteName()
+    {
+        return spriteName;
+    }
     
     public void SetState(CardState cardState)
     {
