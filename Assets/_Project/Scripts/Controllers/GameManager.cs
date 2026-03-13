@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 
     private int score;
     private int scoreMultiplier;
+    private int highScore;
     
     List<CardData> playingCardData = new List<CardData>();
     
@@ -31,10 +32,17 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         gridManager.InitializeGrid(ref playingCards);
+        SaveManager.Instance.LoadScore(ref score, ref highScore, ref scoreMultiplier);
         if (SaveManager.Instance.IsSaveAvailable())
         {
             playingCardData = SaveManager.Instance.LoadLeveData();
         }
+        else
+        {
+            score = 0;
+            scoreMultiplier = 0;
+        }
+        uiManager.UpdateScoreUI(score, highScore, scoreMultiplier);
         LoadAtlas();
     }
 
@@ -83,6 +91,9 @@ public class GameManager : MonoBehaviour
     {   
         cardStack = new Stack<Card>();
         playingCardData.Clear();
+        score = 0;
+        scoreMultiplier = 0;
+        uiManager.UpdateScoreUI(score, highScore, scoreMultiplier);
         
       
         spriteArray.Shuffle();
@@ -141,7 +152,11 @@ public class GameManager : MonoBehaviour
     private void UpdateScore()
     {
         score += fixedScore * scoreMultiplier;
-     
+        if (score > highScore)
+        {
+            highScore = score;
+        }
+        uiManager.UpdateScoreUI(score, highScore, scoreMultiplier);
     }
 
     private IEnumerator CorrectMatch(Card lastCard, Card incomingCard)
@@ -162,6 +177,8 @@ public class GameManager : MonoBehaviour
 
         if (cardStack.Count == playingCards.Count)
         {
+           SaveManager.Instance.UpdateScore(score, highScore, scoreMultiplier);
+           SaveManager.Instance.SaveGameData();
            uiManager.LevelCompleteEvent();
         }
     }
@@ -186,9 +203,13 @@ public class GameManager : MonoBehaviour
         if (matchedCards == 0 || matchedCards == playingCardData.Count)
         {
             SaveManager.Instance.ClearLevelData();
+            // We still want to save the highscore if it was updated
+            SaveManager.Instance.UpdateScore(0, highScore, 0);
+            SaveManager.Instance.SaveGameData();
             return;
         }
            
+        SaveManager.Instance.UpdateScore(score, highScore, scoreMultiplier);
         SaveManager.Instance.SaveLevelData(true,playingCardData);
         
     }

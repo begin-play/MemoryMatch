@@ -76,7 +76,8 @@ public class Card : MonoBehaviour, IPointerDownHandler
     public void Flip()
     {
         state = CardState.Animating;
-        StartCoroutine(nameof(AnimateCard));
+        if(gameObject.activeInHierarchy)
+            StartCoroutine(nameof(AnimateCard));
     }
 
     IEnumerator AnimateCard()

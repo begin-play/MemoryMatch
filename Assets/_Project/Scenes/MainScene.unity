@@ -2258,7 +2258,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 200, y: 0}
-  m_SizeDelta: {x: 1500, y: 900}
+  m_SizeDelta: {x: 1300, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &701278483
 MonoBehaviour:
@@ -5167,9 +5167,12 @@ MonoBehaviour:
   settingMenu: {fileID: 835172464}
   creditsMenu: {fileID: 1136085603}
   quitMenu: {fileID: 679321108}
-  scoreBoard: {fileID: 1271172217}
   gameBoard: {fileID: 701278480}
   gameCompleteMenu: {fileID: 653562281}
+  scoreBoard: {fileID: 1271172217}
+  scoreText: {fileID: 137434163}
+  highScoreText: {fileID: 211728854}
+  multiplierText: {fileID: 2095088613}
   resumeButton: {fileID: 1110315919}
   startButton: {fileID: 1229007075}
   settingButton: {fileID: 528693710}

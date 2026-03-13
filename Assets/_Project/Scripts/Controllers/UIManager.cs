@@ -12,9 +12,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject settingMenu;
     [SerializeField] private GameObject creditsMenu;
     [SerializeField] private GameObject quitMenu;
-    [SerializeField] private GameObject scoreBoard;
     [SerializeField] private GameObject gameBoard;
     [SerializeField] private GameObject gameCompleteMenu;
+    
+    [Header("Game Board References")] 
+    [SerializeField] private GameObject scoreBoard;
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text highScoreText;
+    [SerializeField] private Text multiplierText;
     
     [Header("Main Menu Buttons")] 
     [SerializeField] private Button resumeButton;
@@ -206,6 +211,13 @@ public class UIManager : MonoBehaviour
     {
         audioManager.PlayButtonClickAudio();
         menuItem.SetActive(open);
+    }
+
+    public void UpdateScoreUI(int score, int highScore, int multiplier)
+    {
+       scoreText.text =score.ToString();
+       highScoreText.text = highScore.ToString();
+       multiplierText.text = multiplier.ToString();
     }
 
     void OnDisable()
