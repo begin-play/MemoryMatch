@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip cardMismatch;
     
     private AudioSource audioSource;
+    private AudioSource sfxSource;
     
     private bool allowMusic = true;
     private bool allowSfx = true;
@@ -20,8 +21,9 @@ public class AudioManager : MonoBehaviour
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        sfxSource = transform.GetChild(0).GetComponent<AudioSource>();
         SaveManager.Instance.LoadMusicSettings(ref musicVolume,ref sfxVolume,ref allowMusic,ref allowSfx);
-       
+     
     }
     
     private void Start()
@@ -85,7 +87,7 @@ public class AudioManager : MonoBehaviour
     {
         if (allowSfx)
         {
-            audioSource.PlayOneShot(clip, sfxVolume);
+            sfxSource.PlayOneShot(clip, sfxVolume);
         }
     }
     #endregion

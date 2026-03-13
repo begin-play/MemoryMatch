@@ -42,14 +42,16 @@ public class UIManager : MonoBehaviour
     [SerializeField]private Button quitGameNoButton;
 
     private GameManager gameManager;
-    private AudioManager audioManager;
+    
+    [Header("Audio Manager References")]
+    [SerializeField]private AudioManager audioManager;
  
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        audioManager = FindObjectOfType<AudioManager>();
+       
         
         resumeButton.gameObject.SetActive(SaveManager.Instance.IsSaveAvailable());
        
@@ -119,11 +121,12 @@ public class UIManager : MonoBehaviour
     }
     private void GameMenuNextButtonPressed()
     {
+        audioManager.PlayButtonClickAudio();
         gameCompleteMenu.SetActive(false);
         gameBoard.SetActive(true);
         gameManager.ResetBoardCards();
         gameManager.StartGame();
-        audioManager.PlayButtonClickAudio();
+       
     }
     void SettingButtonPressed()
     {
@@ -159,7 +162,6 @@ public class UIManager : MonoBehaviour
         HandleMenuItems(settingMenu, false);
         HandleMenuItems(mainMenu);
         SaveManager.Instance.SetMusicSettings(musicVolumeSlider.value, sfxVolumeSlider.value, musicToggle.isOn, sfxToggle.isOn);
-        SaveManager.Instance.SaveGameData();
     }
     #endregion
     

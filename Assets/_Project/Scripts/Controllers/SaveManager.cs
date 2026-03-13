@@ -49,6 +49,8 @@ public class SaveManager : MonoBehaviour
         currentSaveData.sfxVolume = sfxVolume;
         currentSaveData.isMusicOn = isMusicOn;
         currentSaveData.isSfxOn = isSfxOn;
+        
+        SaveGameData();
     }
     public void LoadMusicSettings(ref float musicVolume,ref float sfxVolume,ref bool isMusicOn,ref bool isSfxOn)
     {
