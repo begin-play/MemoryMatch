@@ -20,11 +20,19 @@ public class GameManager : MonoBehaviour
     [SerializeField]private GameObject referenceCard;
     [SerializeField] private int gridSize=6;
     private UIManager uiManager;
-   // public UIManager UIMnaager { set => uiManager = value;}
+
+    void Start()
+    {
+        gridSize= SaveManager.Instance.LoadGridSize();
+        
+    }
+    public void ResumeGame()
+    {
+        
+    }
 
     public void StartGame()
     {
-       
         StartCoroutine(StartNewGame());
     }
 

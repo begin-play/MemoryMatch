@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -13,62 +12,87 @@ public class AudioManager : MonoBehaviour
     private AudioSource audioSource;
     
     private bool allowMusic = true;
-    private bool allowSFX = true;
+    private bool allowSfx = true;
     
     private float musicVolume = 1f;
     private float sfxVolume = 1f;
+
+    private void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+        SaveManager.Instance.LoadMusicSettings(ref musicVolume,ref sfxVolume,ref allowMusic,ref allowSfx);
+       
+    }
     
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-
         if (allowMusic)
         {
             audioSource.Play();
         }
-    }
 
-    public void SetMuiscVolume(float volume)
-    {
-        musicVolume = volume;
-        audioSource.volume = musicVolume;
-    }
-
-    public void SetSFXVolume(float volume)
-    {
-        sfxVolume = volume;
     }
     
+    #region Button Press Events
+    public void MusicTogglePressReceived(bool isOn)
+    {
+        allowMusic = isOn;
+        if (allowMusic)
+        {
+            audioSource.Play();
+        }
+        else
+        {
+            audioSource.Stop();
+        }
+    }
+    public void SfxTogglePressReceived(bool isOn)
+    {
+        allowSfx = isOn;
+    }
+    public void MusicVolumeChangeReceived(float value)
+    {
+        musicVolume = value;
+        audioSource.volume = musicVolume;
+    }
+    public void SfxVolumeChangeReceived(float value)
+    {
+        sfxVolume = value;
+    }
+    
+   #endregion
+    
+    #region Play Audio
     public void PlayButtonClickAudio()
     {
-        PlaySFX(buttonClick);
+        PlaySfx(buttonClick);
     }
 
     public void PlayCardFlipAudio()
     {
-        PlaySFX(cardFlip);
+        PlaySfx(cardFlip);
     }
 
     public void PlayCardFlipBackAudio()
     {
-        PlaySFX(cardFlipBack);
+        PlaySfx(cardFlipBack);
     }
     public void PlayCardMatchAudio()
     {
-        PlaySFX(cardMatch);
+        PlaySfx(cardMatch);
     }
     public void PlayCardMismatchAudio()
     {
-        PlaySFX(cardMismatch);
+        PlaySfx(cardMismatch);
     }
     
-    private void PlaySFX(AudioClip clip)
+    private void PlaySfx(AudioClip clip)
     {
-        if (allowSFX)
+        if (allowSfx)
         {
             audioSource.PlayOneShot(clip, sfxVolume);
         }
     }
-    
+    #endregion
     
 }

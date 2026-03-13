@@ -28,7 +28,10 @@ public class UIManager : MonoBehaviour
     
     [Header("Setting Menu Buttons, Toggles And Sliders")] 
     [SerializeField] private Button settingsBackButton;
-  
+    [SerializeField]private Toggle musicToggle;
+    [SerializeField]private Toggle sfxToggle;
+    [SerializeField]private Slider musicVolumeSlider;
+    [SerializeField]private Slider sfxVolumeSlider;
     
     [Header("Credits Menu Buttons")] 
     [SerializeField]private Button creditsBackButton;
@@ -37,13 +40,15 @@ public class UIManager : MonoBehaviour
     [SerializeField]private Button quitGameYesButton;
     [SerializeField]private Button quitGameNoButton;
 
-    GameManager gameManager;
-    AudioManager audioManager;
+    private GameManager gameManager;
+    private AudioManager audioManager;
+ 
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        audioManager = FindObjectOfType<AudioManager>();
     
         if (!SaveManager.Instance.IsSaveAvailable())
         {
@@ -55,7 +60,10 @@ public class UIManager : MonoBehaviour
             //Save available
             resumeButton.gameObject.SetActive(true);
         }
+       
+        SaveManager.Instance.LoadMusicSettings(ref musicVolumeSlider,ref sfxVolumeSlider,ref musicToggle,ref sfxToggle);
     }
+    
 
     void OnEnable()
     {
@@ -70,15 +78,24 @@ public class UIManager : MonoBehaviour
         
         settingsBackButton.onClick.AddListener(SettingsBackButtonPressed);
         
+        musicToggle.onValueChanged.AddListener(MusicTogglePressed);
+        sfxToggle.onValueChanged.AddListener(SfxTogglePressed);
+        
+        musicVolumeSlider.onValueChanged.AddListener(MusicVolumeChangePressed);
+        sfxVolumeSlider.onValueChanged.AddListener(SfxVolumeChangePressed);
+        
         creditsBackButton.onClick.AddListener(CreditsBackButtonPressed);
         
         quitGameYesButton.onClick.AddListener(QuitGameYesPressed);
         quitGameNoButton.onClick.AddListener(QuitGameNoPressed);
     }
+   
 
     void ResumeButtonPressed()
     {
         HandleMenuItems(mainMenu, false);
+        HandleMenuItems(gameMenu);
+        gameManager.ResumeGame();
     }
 
     void StartButtonPressed()
@@ -88,13 +105,13 @@ public class UIManager : MonoBehaviour
         gameManager.StartGame();
     }
 
-    public void GameMenuBackButtonPressed()
+    private void GameMenuBackButtonPressed()
     {
         HandleMenuItems(gameMenu, false);
         HandleMenuItems(mainMenu);
         
     } 
-    public void GameMenuNextButtonPressed()
+    private void GameMenuNextButtonPressed()
     {
        //add next button functionality here later.
     }
@@ -103,12 +120,38 @@ public class UIManager : MonoBehaviour
         HandleMenuItems(mainMenu, false);
         HandleMenuItems(settingMenu);
     }
-
+    
+    #region Settings Sub-Menu Buttons
+    void MusicTogglePressed(bool isOn)
+    {
+        audioManager.MusicTogglePressReceived(isOn);
+       
+    }
+    void SfxTogglePressed(bool isOn)
+    {
+        audioManager.SfxTogglePressReceived(isOn);
+       
+    }
+    void MusicVolumeChangePressed(float value)
+    {
+        value = Mathf.Round(value*10f) /10f;
+        audioManager.MusicVolumeChangeReceived(value);
+       
+    }
+    void SfxVolumeChangePressed(float value)
+    {
+        value = Mathf.Round(value*10f) /10f;
+        audioManager.SfxVolumeChangeReceived(value);
+       
+    }
     void SettingsBackButtonPressed()
     {
         HandleMenuItems(settingMenu, false);
         HandleMenuItems(mainMenu);
+        SaveManager.Instance.SetMusicSettings(musicVolumeSlider.value, sfxVolumeSlider.value, musicToggle.isOn, sfxToggle.isOn);
+        SaveManager.Instance.SaveGameData();
     }
+    #endregion
     
     void CreditsButtonPressed()
     {
@@ -125,7 +168,7 @@ public class UIManager : MonoBehaviour
     {
         HandleMenuItems(mainMenu, false);
         HandleMenuItems(quitMenu);
-
+        SaveManager.Instance.SaveGameData();
     }
 
     void QuitGameYesPressed()
@@ -153,6 +196,17 @@ public class UIManager : MonoBehaviour
         settingButton.onClick.RemoveListener(SettingButtonPressed);
         creditsButton.onClick.RemoveListener(CreditsButtonPressed);
         quitButton.onClick.RemoveListener(QuitButtonPressed);
+
+        gameMenuBackButton.onClick.RemoveListener(GameMenuBackButtonPressed);
+        gameMenuNextButton.onClick.RemoveListener(GameMenuNextButtonPressed);
+        
+        settingsBackButton.onClick.RemoveListener(SettingsBackButtonPressed);
+        
+        musicToggle.onValueChanged.RemoveListener(MusicTogglePressed);
+        sfxToggle.onValueChanged.RemoveListener(SfxTogglePressed);
+        
+        musicVolumeSlider.onValueChanged.RemoveListener(MusicVolumeChangePressed);
+        sfxVolumeSlider.onValueChanged.RemoveListener(SfxVolumeChangePressed);
         
         creditsBackButton.onClick.RemoveListener(CreditsBackButtonPressed);
         

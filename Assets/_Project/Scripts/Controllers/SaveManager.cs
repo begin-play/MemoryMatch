@@ -1,8 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SaveManager : MonoBehaviour
 {
@@ -21,7 +20,7 @@ public class SaveManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         
-        saveFilePath = Path.Combine(Application.persistentDataPath, "saveData.json");
+        saveFilePath = Path.Combine(Application.persistentDataPath, "savedata.json");
     }
 
     // Start is called before the first frame update
@@ -38,20 +37,40 @@ public class SaveManager : MonoBehaviour
             string json = File.ReadAllText(saveFilePath);
             currentSaveData = JsonUtility.FromJson<SaveData>(json);
         }
-        // else
-        // {
-        //     currentSaveData = new SaveData();
-        // }
     }
 
-    public void UpdateMusicSettings(float musicVolume, float sfxVolume,bool isMusicOn, bool isSfxOn)
+    public int LoadGridSize()
+    {
+        return 6;
+    }
+    
+    #region Music Settings
+
+    public void SetMusicSettings(float musicVolume, float sfxVolume, bool isMusicOn, bool isSfxOn)
     {
         currentSaveData.musicVolume = musicVolume;
         currentSaveData.sfxVolume = sfxVolume;
         currentSaveData.isMusicOn = isMusicOn;
         currentSaveData.isSfxOn = isSfxOn;
     }
-
+    public void LoadMusicSettings(ref float musicVolume,ref float sfxVolume,ref bool isMusicOn,ref bool isSfxOn)
+    {
+        musicVolume = currentSaveData.musicVolume;
+        sfxVolume = currentSaveData.sfxVolume;
+        isMusicOn = currentSaveData.isMusicOn;
+        isSfxOn = currentSaveData.isSfxOn;
+    }
+    public void LoadMusicSettings(ref Slider musicVolume,ref Slider sfxVolume,ref Toggle isMusicOn,ref Toggle isSfxOn)
+    {
+        musicVolume.value = currentSaveData.musicVolume;
+        sfxVolume.value = currentSaveData.sfxVolume;
+        isMusicOn.isOn = currentSaveData.isMusicOn;
+        isSfxOn.isOn = currentSaveData.isSfxOn;
+    }
+    
+    #endregion
+    
+    #region Score Board Data
     public void UpdateScore(int score, int highScore, int scoreMultiplier)
     {
         currentSaveData.score = score;
@@ -59,6 +78,14 @@ public class SaveManager : MonoBehaviour
         currentSaveData.scoreMultiplier = scoreMultiplier;
     }
 
+    public void LoadScore(ref int score,ref int highScore,ref int scoreMultiplier)
+    {
+        score = currentSaveData.score;
+        highScore = currentSaveData.highScore;
+        scoreMultiplier = currentSaveData.scoreMultiplier;
+    }
+    #endregion
+    
     public void SaveLevelData(bool saveAvailable, List<CardData> savedCardData)
     {
         currentSaveData.saveAvailable = saveAvailable;
@@ -81,7 +108,7 @@ public class SaveManager : MonoBehaviour
     }
     public void SaveGameData()
     {
-        string json = JsonUtility.ToJson(currentSaveData);
+        string json = JsonUtility.ToJson(currentSaveData,true);
         File.WriteAllText(saveFilePath, json);
     }
 }
