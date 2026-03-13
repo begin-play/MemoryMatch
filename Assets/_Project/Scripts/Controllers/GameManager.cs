@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour
     
     [SerializeField] GridManager gridManager;
     [SerializeField] UIManager uiManager;
-
+    [SerializeField] AudioManager audioManager;
+    [SerializeField] private GameObject gameBoard;
     [SerializeField]private Sprite[] spriteArray;
     void Start()
     {
@@ -58,16 +59,24 @@ public class GameManager : MonoBehaviour
     {
         cardStack = new Stack<Card>();
         
-        for (int i = 0; i < playingCards.Count; i++)
+        for (int i = 0; i < playingCardData.Count; i++)
         {
-            playingCardData[i].SetCardSiblingIndex(playingCards[i].transform.GetSiblingIndex());
-            
-            playingCards[i].Initialize(this, playingCardData[i]);
+            int index = playingCardData[i].GetCardSiblingIndex();
+            gameBoard.transform.GetChild(index).GetComponent<Card>().Initialize(this, playingCardData[i]);
+           
         }
 
         yield return new WaitForSeconds(cardPeekTime);
 
-        foreach (var card in playingCards) card.Flip();
+        foreach (var card in playingCards)
+        {
+            if (card.State == CardState.Matched)
+            {
+                continue;
+            }
+
+            card.Flip();
+        }
        
     }
     private IEnumerator StartNewGame()
@@ -80,10 +89,8 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < playingCards.Count/2; i++)
         {
-            CardData cardData = new CardData(i,spriteArray[i],CardState.FaceUp);
-            playingCardData.Add(cardData);
-            playingCardData.Add(cardData);
-       
+            playingCardData.Add(new CardData(i,spriteArray[i],CardState.FaceUp));
+            playingCardData.Add(new CardData(i,spriteArray[i],CardState.FaceUp));
         }
         playingCardData.Shuffle();
         
@@ -102,8 +109,10 @@ public class GameManager : MonoBehaviour
 
     public void ProcessCard(Card incomingCard)
     {
+        audioManager.PlayCardFlipAudio();
         if (cardStack.Count % 2 == 0)
         {
+            
             cardStack.Push(incomingCard);
         }
         else
@@ -140,10 +149,10 @@ public class GameManager : MonoBehaviour
         yield return new WaitUntil(() => incomingCard.State == CardState.FaceUp);
         lastCard.State = CardState.Matched;
         incomingCard.State = CardState.Matched;
-        
+        audioManager.PlayCardMatchAudio();
         foreach (var cardData in playingCardData)
         {
-            if(cardData.GetUniqueId()== incomingCard.UniqueId)
+            if(cardData.GetUniqueId() == incomingCard.UniqueId)
                 cardData.SetState(CardState.Matched);
         }
         
@@ -165,6 +174,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator IncorrectMatch(Card poppedCard, Card incomingCard)
     {
         yield return new WaitUntil(() => incomingCard.State == CardState.FaceUp);
+        audioManager.PlayCardMismatchAudio();
         poppedCard.Flip();
         incomingCard.Flip();
     }

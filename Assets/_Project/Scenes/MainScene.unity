@@ -2395,6 +2395,8 @@ MonoBehaviour:
   spriteAtlas: {fileID: 4343727234628468602, guid: 35a7eeed097f1864eaf99ea7a41e9d19, type: 2}
   gridManager: {fileID: 831755090}
   uiManager: {fileID: 1517629521}
+  audioManager: {fileID: 1664030621}
+  gameBoard: {fileID: 701278480}
   spriteArray: []
 --- !u!1 &775362635
 GameObject:
@@ -2515,7 +2517,7 @@ MonoBehaviour:
   gameBoard: {fileID: 701278480}
   referenceCard: {fileID: 2730154974043330238, guid: 8879f22523cf79e45866e5febed68c42, type: 3}
   columnSize: 2
-  rowSize: 2
+  rowSize: 3
   isGridSizeValid: 1
 --- !u!4 &831755091
 Transform:
@@ -5200,7 +5202,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 27404163c8cfe425e8e26c911c1acde2, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -5298,11 +5300,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab068c3d300f2fa41bd11d035a7f5239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonClick: {fileID: 0}
-  cardFlip: {fileID: 0}
-  cardFlipBack: {fileID: 0}
-  cardMatch: {fileID: 0}
-  cardMismatch: {fileID: 0}
+  buttonClick: {fileID: 8300000, guid: b9f0c283bed9b4ce29f3ba7ca4c2edc4, type: 3}
+  cardFlip: {fileID: 8300000, guid: c053c3d2a711144dcb83ba80730f20a6, type: 3}
+  cardMatch: {fileID: 8300000, guid: ca7aececce7aa48e0bc07b33d575a5f1, type: 3}
+  cardMismatch: {fileID: 8300000, guid: 7c2de8e149d8346748fb31ed14cc7986, type: 3}
 --- !u!1 &1684199627
 GameObject:
   m_ObjectHideFlags: 0

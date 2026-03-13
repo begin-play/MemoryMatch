@@ -29,7 +29,6 @@ public class CardData
 
     public void SetCardSiblingIndex(int cardSiblingIndex)
     {
-        Debug.Log("Setting card sibling index to " + cardSiblingIndex);
         this.cardSiblingIndex = cardSiblingIndex;
     }
 

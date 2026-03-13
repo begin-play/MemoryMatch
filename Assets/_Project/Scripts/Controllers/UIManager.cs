@@ -104,9 +104,10 @@ public class UIManager : MonoBehaviour
     private void GameMenuBackButtonPressed()
     {
        
+        gameManager.SaveActiveLevel();
+        
         HandleMenuItems(gameMenu, false);
         HandleMenuItems(mainMenu);
-        gameManager.SaveActiveLevel();
        
         resumeButton.gameObject.SetActive(SaveManager.Instance.IsSaveAvailable());
     }
@@ -122,6 +123,7 @@ public class UIManager : MonoBehaviour
         gameBoard.SetActive(true);
         gameManager.ResetBoardCards();
         gameManager.StartGame();
+        audioManager.PlayButtonClickAudio();
     }
     void SettingButtonPressed()
     {
@@ -200,6 +202,7 @@ public class UIManager : MonoBehaviour
    
     void HandleMenuItems(GameObject menuItem, bool open = true)
     {
+        audioManager.PlayButtonClickAudio();
         menuItem.SetActive(open);
     }
 

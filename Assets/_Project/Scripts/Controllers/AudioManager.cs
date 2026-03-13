@@ -5,7 +5,7 @@ public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioClip buttonClick;
     [SerializeField] private AudioClip cardFlip;
-    [SerializeField] private AudioClip cardFlipBack;
+  
     [SerializeField] private AudioClip cardMatch;
     [SerializeField] private AudioClip cardMismatch;
     
@@ -71,11 +71,6 @@ public class AudioManager : MonoBehaviour
     public void PlayCardFlipAudio()
     {
         PlaySfx(cardFlip);
-    }
-
-    public void PlayCardFlipBackAudio()
-    {
-        PlaySfx(cardFlipBack);
     }
     public void PlayCardMatchAudio()
     {
